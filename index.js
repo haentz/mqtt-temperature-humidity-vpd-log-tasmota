@@ -368,21 +368,26 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 	if (this.savePeriod > 0) {
 		that.log("Saving data every " + this.savePeriod + " minutes to " + that.pathToSave);
 		
-		//VPD
-		
-		let temperature = that.temperature
-		let humidity = that.humidity
-		
-		  let ASVP = 610.78 * Math.pow (2.71828 , (temperature / (temperature +238.3) * 17.2694));
-		
-		// this is for flower, -2 for veg:
-				let LSVP = 610.78 * Math.pow (2.71828 , ((temperature) / ((temperature) +238.3) * 17.2694));
-		
-				let VPD = (LSVP - (ASVP * humidity /100))/1000;
-		
 		
 		var j = schedule.scheduleJob("0 */" + this.savePeriod + " * * * *", function() {
-			that.log("Saving data to " + that.pathToSave + "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + " vpd="+ VPD +")");
+		
+
+
+
+ //VPD
+
+                let temperature = that.temperature
+                let humidity = that.humidity
+
+                  let ASVP = 610.78 * Math.pow (2.71828 , (temperature / (temperature +238.3) * 17.2694));
+
+                // this is for flower, -2 for veg:
+                let LSVP = 610.78 * Math.pow (2.71828 , ((temperature) / ((temperature) +238.3) * 17.2694));
+
+                let VPD = (LSVP - (ASVP * humidity /100))/1000;
+
+
+				that.log("Saving data to " + that.pathToSave + "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + " vpd="+ VPD +")");
 
 			if (this.singleFile) {
                 let text = convertDateToStr(that.dataMessage.Time) + "\t" + that.temperature;
@@ -393,7 +398,7 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
                 that.fs.appendFile(that.pathToSave + that.filename + "_log.csv", text, "utf8", function (err) {
                     if (err) {
                         that.pathToSave = false;
-                        that.log("Problem with save file (temperature log)");
+                        that.log("Problem with save file (log)");
                     }
                 });
 			}
