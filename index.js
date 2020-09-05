@@ -1,6 +1,8 @@
 // Sonoff-Tasmota Temperature Sensor Accessory plugin for HomeBridge with log and min-max temp by @MacWyznawca Jaromir Kopp
 'use strict';
 
+import math
+
 var Service, Characteristic;
 var mqtt = require("mqtt");
 var inherits = require('util').inherits;
