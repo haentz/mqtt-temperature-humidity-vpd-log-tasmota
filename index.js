@@ -370,8 +370,8 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 		
 		//VPD
 		
-		temperature = that.temperature
-		humidity = that.humidity
+		let temperature = that.temperature
+		let humidity = that.humidity
 		
 		  let ASVP = 610.78 * Math.pow (2.71828 , (temperature / (temperature +238.3) * 17.2694));
 		
