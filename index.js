@@ -386,8 +386,8 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 
                 let VPD = (LSVP - (ASVP * humidity /100))/1000;
 
-
-				that.log("Saving data to " + that.pathToSave + "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + " vpd="+ VPD +")");
+that.log(this.singleFile);
+		that.log("Saving data to " + that.pathToSave + that.filename + "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + " vpd="+ VPD +")");
 
 			if (this.singleFile) {
                 let text = convertDateToStr(that.dataMessage.Time) + "\t" + that.temperature;
