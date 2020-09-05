@@ -1,8 +1,6 @@
 // Sonoff-Tasmota Temperature Sensor Accessory plugin for HomeBridge with log and min-max temp by @MacWyznawca Jaromir Kopp
 'use strict';
 
-import math
-
 var Service, Characteristic;
 var mqtt = require("mqtt");
 var inherits = require('util').inherits;
@@ -372,11 +370,11 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 		
 		//VPD
 		
-		ASVP = 610.78 * math.e ** (that.temperature / (that.temperature +238.3) * 17.2694)
+		let asvp = Math.pow(610.78 * Math.E , (that.temperature / (that.temperature +238.3) * 17.2694));
 		
-		LSVP = 610.78 * math.e ** ((that.temperature-2) / ((that.temperature-2) +238.3) * 17.2694)
+		let LSVP = Math.pow(610.78 * Math.E , ((that.temperature-2) / ((that.temperature-2) +238.3) * 17.2694));
 		
-		VPD = LSVP - (ASVP * (that.humidity) / 100)
+		let VPD = LSVP - (asvp * (that.humidity) / 100);
 		
 
 		
