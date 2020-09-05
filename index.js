@@ -369,7 +369,7 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 		that.log("Saving data every " + this.savePeriod + " minutes to " + that.pathToSave);
 		
 		//VPD
-		T=tempCounter/divider
+		
 		ASVP = 610.78 * math.e ** (that.temperature / (that.temperature +238.3) * 17.2694)
 		
 		LSVP = 610.78 * math.e ** ((that.temperature-2) / ((that.temperature-2) +238.3) * 17.2694)
