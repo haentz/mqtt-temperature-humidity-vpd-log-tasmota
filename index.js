@@ -389,7 +389,7 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 
 				that.log("Saving data to " + that.pathToSave + that.filename+ "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + " vpd="+ VPD +")");
 
-
+// TODO WHY THE FUCK is this.singleFile undefined here ???? fuck JS…
 			if (true) {
                 let text = convertDateToStr(that.dataMessage.Time) + "\t" + that.temperature;
                 if (that.pressure > 800) { text = text + "\t" + that.pressure }
