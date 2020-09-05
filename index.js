@@ -10,7 +10,7 @@ var schedule = require('node-schedule');
 module.exports = function(homebridge) {
 	Service = homebridge.hap.Service;
 	Characteristic = homebridge.hap.Characteristic;
-	homebridge.registerAccessory("homebridge-mqtt-temperature-and-humidity-log-tasmota", "mqtt-temperature-and-humidity-log-tasmota", TemperatureAndHumidityLogTasmotaAccessory);
+	homebridge.registerAccessory("homebridge-mqtt-temperature-humidity-vpd-log-tasmota", "homebridge-mqtt-temperature-humidity-vpd-log-tasmota", TemperatureHumidityVPDLogTasmotaAccessory);
 }
 
 function convertDateToStr(date) {
@@ -29,7 +29,7 @@ function convertDateTofilename(date) {
 	return date;
 }
 
-function TemperatureAndHumidityLogTasmotaAccessory(log, config) {
+function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 	this.fs = require("graceful-fs");
 
 	this.log = log;
@@ -363,17 +363,30 @@ function TemperatureAndHumidityLogTasmotaAccessory(log, config) {
 		}
 	});
 
-
+	
 	// Save data periodically
 	if (this.savePeriod > 0) {
 		that.log("Saving data every " + this.savePeriod + " minutes to " + that.pathToSave);
+		
+		//VPD
+		T=float(tempCounter/divider)
+		ASVP = 610.78 * math.e ** (that.temperature / (that.temperature +238.3) * 17.2694)
+		
+		LSVP = 610.78 * math.e ** ((that.temperature-2) / ((that.temperature-2) +238.3) * 17.2694)
+		
+		VPD = LSVP - (ASVP * (that.humidity) / 100)
+		
+
+		
+		
 		var j = schedule.scheduleJob("0 */" + this.savePeriod + " * * * *", function() {
-			that.log("Saving data to " + that.pathToSave + "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + ")");
+			that.log("Saving data to " + that.pathToSave + "(temp=" + that.temperature + ", pressure=" + that.pressure + ", humidity=" + that.humidity + " vpd="+ VPD +")");
 
 			if (this.singleFile) {
                 let text = convertDateToStr(that.dataMessage.Time) + "\t" + that.temperature;
                 if (that.pressure > 800) { text = text + "\t" + that.pressure }
 				if (that.humidity > 0) { text = text + "\t" + that.humidity }
+				if(VPD>0){ text=text+"\t"+VPD}
 				text = text + "\n";
                 that.fs.appendFile(that.pathToSave + that.filename + "_log.csv", text, "utf8", function (err) {
                     if (err) {
@@ -407,9 +420,16 @@ function TemperatureAndHumidityLogTasmotaAccessory(log, config) {
                 }
                 
                 
-                //VPD
-                
-                
+                              
+                if (VPD > 0) {
+                	that.fs.appendFile(that.pathToSave + that.filename + "_vpd.csv", convertDateToStr(that.dataMessage.Time) + "\t" + VPD + "\n", "utf8", function (err) {
+                		if (err) {
+                			that.pathToSave = false;
+                			that.log("Problem with save file (_vpd log)");
+                		}
+                	});
+                }
+
                 
             }
 		});
@@ -431,27 +451,27 @@ function TemperatureAndHumidityLogTasmotaAccessory(log, config) {
 	});
 }
 
-TemperatureAndHumidityLogTasmotaAccessory.prototype.getState = function(callback) {
+TemperatureHumidityVPDLogTasmotaAccessory.prototype.getState = function(callback) {
 	callback(null, this.temperature);
 }
 
-TemperatureAndHumidityLogTasmotaAccessory.prototype.getStatusActive = function(callback) {
+TemperatureHumidityVPDLogTasmotaAccessory.prototype.getStatusActive = function(callback) {
 	callback(null, this.activeStat);
 }
 
-TemperatureAndHumidityLogTasmotaAccessory.prototype.getTimestamp = function(callback) {
+TemperatureHumidityVPDLogTasmotaAccessory.prototype.getTimestamp = function(callback) {
 	callback(null, convertDateToStr(this.dataMessage.Time));
 }
 
-TemperatureAndHumidityLogTasmotaAccessory.prototype.getAtmosphericPressureLevel = function(callback) {
+TemperatureHumidityVPDLogTasmotaAccessory.prototype.getAtmosphericPressureLevel = function(callback) {
 	callback(null, this.pressure);
 }
 
-TemperatureAndHumidityLogTasmotaAccessory.prototype.getCurrentRelativeHumidity = function(callback) {
+TemperatureHumidityVPDLogTasmotaAccessory.prototype.getCurrentRelativeHumidity = function(callback) {
 	callback(null, this.humidity);
 }
 
-TemperatureAndHumidityLogTasmotaAccessory.prototype.getServices = function() {
+TemperatureHumidityVPDLogTasmotaAccessory.prototype.getServices = function() {
 
 	var informationService = new Service.AccessoryInformation();
 
