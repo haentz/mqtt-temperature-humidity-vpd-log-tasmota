@@ -363,6 +363,7 @@ function TemperatureAndHumidityLogTasmotaAccessory(log, config) {
 		}
 	});
 
+
 	// Save data periodically
 	if (this.savePeriod > 0) {
 		that.log("Saving data every " + this.savePeriod + " minutes to " + that.pathToSave);
@@ -404,6 +405,12 @@ function TemperatureAndHumidityLogTasmotaAccessory(log, config) {
                         }
                     });
                 }
+                
+                
+                //VPD
+                
+                
+                
             }
 		});
 	}
