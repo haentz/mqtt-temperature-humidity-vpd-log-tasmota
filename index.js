@@ -370,13 +370,15 @@ function TemperatureHumidityVPDLogTasmotaAccessory(log, config) {
 		
 		//VPD
 		
-		let asvp = Math.pow(610.78 * Math.E , (that.temperature / (that.temperature +238.3) * 17.2694));
+		temperature = that.temperature
+		humidity = that.humidity
 		
-		let LSVP = Math.pow(610.78 * Math.E , ((that.temperature-2) / ((that.temperature-2) +238.3) * 17.2694));
+		  let ASVP = 610.78 * Math.pow (2.71828 , (temperature / (temperature +238.3) * 17.2694));
 		
-		let VPD = LSVP - (asvp * (that.humidity) / 100);
+		// this is for flower, -2 for veg:
+				let LSVP = 610.78 * Math.pow (2.71828 , ((temperature) / ((temperature) +238.3) * 17.2694));
 		
-
+				let VPD = LSVP - (ASVP * humidity /100);
 		
 		
 		var j = schedule.scheduleJob("0 */" + this.savePeriod + " * * * *", function() {
